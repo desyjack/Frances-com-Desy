@@ -2,13 +2,5 @@ services:
   - type: web
     name: frances-com-desy
     runtime: static
-    buildCommand: echo "Site estatico pronto para publicar"
+    buildCommand: echo "Site pronto"
     staticPublishPath: .
-    autoDeployTrigger: commit
-    headers:
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: Referrer-Policy
-        value: strict-origin-when-cross-origin

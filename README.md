@@ -1,34 +1,28 @@
-# Francês com Desy — Landing page e quiz
+# Francês com Desy — V7 interativa
 
-Site estático em HTML, CSS e JS. Não exige Node.js, dependências ou `server.mjs`.
+## Como publicar no GitHub + Render
 
-## Publicação no GitHub + Render (recomendado)
-1. Crie um repositório GitHub chamado `frances-com-desy`.
-2. Faça upload **dos arquivos desta pasta** para a raiz do repositório: `index.html`, `render.yaml`, `.nojekyll`, `README.md`.
-3. Em https://dashboard.render.com, escolha **New > Static Site** e conecte o repositório.
-4. Se criar como Static Site manual, use:
-   - **Branch**: `main` (ou sua branch padrão)
-   - **Build Command**: `echo "Site estatico pronto para publicar"`
-   - **Publish Directory**: `.`
-5. Publique e abra a URL gerada pelo Render (endereço `*.onrender.com`).
+Este é um site estático. **Não precisa de Node.js ou server.mjs.** Substitua no repositório antigo o `index.html` e envie a pasta `assets/` inteira, sem mudar os nomes. Mantenha `render.yaml` e `.nojekyll` na raiz. Faça o commit; se a publicação automática estiver ligada, o Render atualizará o site existente.
 
-Se optar por **Blueprint** no Render em vez de Static Site manual, o arquivo `render.yaml` já configura o site. Escolha **New > Blueprint**, conecte o mesmo repositório e revise os dados antes de aplicar. Não crie dois serviços ao mesmo tempo (manual e Blueprint).
+Render Static Site: Branch `main`, Publish Directory `.`, Build Command `echo "Site pronto"`.
 
-## Alternativa sem Render: GitHub Pages
-1. Com os arquivos na raiz do repositório, abra **Settings > Pages**.
-2. Em **Build and deployment**, selecione **Deploy from a branch**.
-3. Escolha `main` e `/ (root)` e salve.
-4. A URL será parecida com `https://SEU_USUARIO.github.io/frances-com-desy/`.
+## Animações V7
 
-## Recursos do site
-- Cinco perguntas do quiz, recomendação orientativa A1/A2, exibição de horários.
-- Mensagem personalizada para WhatsApp **+55 71 98807-0059** (o visitante precisa tocar em Enviar).
-- Fotos do professor incorporadas ao HTML.
-- Imagens externas de Paris via Unsplash; precisam de internet e podem falhar caso o provedor bloqueie.
+- Barra de progresso da rolagem na parte superior.
+- Revelação suave das seções conforme entram na tela; aparece apenas uma vez.
+- Linha do tempo da história que se preenche conforme o visitante rola.
+- Elevação discreta dos cartões e zoom suave nas fotografias no desktop.
+- Botões com brilho sutil e feedback de clique.
+- Questionário com alternativas animadas, barra de progresso fluida e transição entre perguntas; resultado com entrada suave.
+- FAQ com microanimação de abertura.
+- Respeito à preferência do navegador por movimento reduzido (`prefers-reduced-motion`).
 
-## Importante antes de divulgar
-- Revise textos, valores, política de certificado, datas e disponibilidade de vagas.
-- A versão estática **não salva respostas em banco de dados**. Elas chegam somente se o visitante confirmar o envio no WhatsApp.
-- Teste com celular Android e iPhone após a publicação.
-- Para registrar leads automaticamente e obter métricas, será necessária uma integração ou backend.
-- A URL `frances-com-desy.onrender.com` é ilustrativa e só existirá se estiver disponível e o deploy for realizado.
+As imagens aprovadas pela pessoa responsável pelo projeto foram preservadas exatamente, sem gerar rostos nem inserir outras fotos. O número do WhatsApp permanece +55 71 98807-0059. O usuário precisa clicar em **Enviar** no WhatsApp.
+
+## Teste
+
+Abra `index.html` mantendo `assets/` ao lado. Teste em tela estreita e computador. Para testar o resultado do quiz, acrescente `?exemplo=1#quiz` à URL.
+
+## Observação
+
+As artes de Mali, Salvador, portaria da UFBA e Paris são representações artísticas, não fotografias documentais desses lugares. Esta versão não substitui a página já publicada até você fazer o commit/deploy.
