@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>PS4 14.00 | WebKit LAB V2 Seguro</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;padding:0}body{font:17px/1.5 Arial,Helvetica,sans-serif;background:#071328;color:#edf4ff}
+.wrap{max-width:820px;margin:auto;padding:24px 18px 44px}.micro{font-size:12px;color:#a7c0dc;letter-spacing:1px;text-transform:uppercase}
+h1{font-size:34px;line-height:1.12;margin:12px 0}h1 span{color:#ff7586}h2{font-size:21px;margin:0 0 10px}p{margin:10px 0}
+.sub{font-size:14px;color:#b7c7db}.box{border:1px solid #334b6b;border-radius:13px;background:#11213c;padding:20px;margin-top:18px}
+.notice{border-left:4px solid #8ed2af;background:#142d2e;padding:15px;border-radius:7px;margin:19px 0}.notice strong{color:#adf3cb}
+.warn{border-left:4px solid #f5be78;background:#342b26;border-radius:7px;padding:13px;margin-top:15px}
+button{background:#e3546a;border:0;color:white;font-weight:bold;font-size:16px;border-radius:9px;padding:14px 18px;min-height:50px;margin:7px 6px 7px 0;cursor:pointer}
+button.alt{background:#315477}button:focus{outline:3px solid #ffcd89}.line{padding:11px 0;border-bottom:1px solid #2c4364}.line:last-child{border:0}
+.line .name{font-weight:bold;display:block}.line .detail{font-size:14px;color:#acbfd6;display:block;overflow-wrap:anywhere}
+.yes{color:#8ce7b5;font-weight:bold}.no{color:#f5ce8c;font-weight:bold}.na{color:#a2b1c4}.chip{display:inline-block;padding:5px 12px;border-radius:999px;background:#23476a;color:#b7e2ff;font-size:12px}
+pre{white-space:pre-wrap;word-break:break-word}textarea{width:100%;height:260px;border:1px solid #49627c;border-radius:8px;background:#061225;padding:12px;color:#eaf1ff;font:12px/1.5 monospace}
+#webinfo{overflow-wrap:anywhere}footer{text-align:center;color:#93a9c4;font-size:12px;margin:24px 0}
+@media(max-width:600px){h1{font-size:28px}.wrap{padding:18px 12px 34px}.box{padding:15px}button{display:block;width:100%;margin:9px 0}}
+</style>
+</head>
+<body><main class="wrap" id="ps4lab-v2-marker">
+<div class="micro">Francês com Desy · laboratório independente</div>
+<div class="chip">FASE 2 / DIAGNÓSTICO CONSERVADOR</div>
+<h1>PS4 <span>WebKit LAB V2</span></h1>
+<p class="sub">Testes leves de compatibilidade. A página original do site de francês e a versão V1 não são alteradas.</p>
+<div class="notice"><strong>Proteção do console:</strong> nenhum exploit, kernel, HEN, WebGL, WebAssembly executável, teste de estresse, alocação grande de memória ou instalação. Nenhum teste é executado automaticamente. Os resultados ficam apenas no navegador até você decidir compartilhá-los.</div>
+<div class="box">
+<h2>1. Ambiente detectado</h2>
+<p id="webinfo" class="sub">Identificando navegador…</p>
+<p class="sub">O cabeçalho do navegador pode informar a plataforma, mas esta página <strong>não confirma o firmware instalado</strong>.</p>
+</div>
+<div class="box">
+<h2>2. Compatibilidade JavaScript e WebKit</h2>
+<p class="sub">12 verificações rápidas, cada uma usando no máximo algumas dezenas de bytes. Não repetimos cálculos pesados nem provocamos condições de erro propositalmente.</p>
+<button id="run" type="button">Executar 12 testes leves</button>
+<p id="summary" aria-live="polite">Ainda não executado.</p>
+<div id="results"></div>
+</div>
+<div class="box">
+<h2>3. Verificação opcional do host</h2>
+<p class="sub">Envia uma única solicitação GET para esta mesma página no Render. Não usa DNS especial.</p>
+<button id="hostbtn" type="button" class="alt">Testar HTTPS do host</button>
+<p id="hostresult" class="sub">Não executado.</p>
+</div>
+<div class="box">
+<h2>4. Relatório para compartilhar</h2>
+<p class="sub">Fotografe os resultados no PS4 ou copie o texto. Nenhum relatório é enviado automaticamente.</p>
+<textarea id="report" readonly>Execute os testes para criar o relatório.</textarea>
+<button id="copy" type="button" class="alt">Selecionar / copiar relatório</button>
+<p id="copyresult" class="sub"></p>
+</div>
+<div class="warn"><strong>Importante:</strong> APIs disponíveis não significam vulnerabilidade nem progresso percentual em um jailbreak. Pare caso o navegador apresente algum comportamento inesperado. Nenhum software garante risco absolutamente zero.</div>
+<footer>PS4 WebKit LAB V2 · diagnóstico de baixa carga · sem alterações de firmware</footer>
+</main>
+<script>
+(function(){
+'use strict';
+function el(id){return document.getElementById(id);}
+function set(id,value){el(id).textContent=String(value);}
+var records=[], hostStatus='não executado';
+set('webinfo','Origem: '+location.protocol+'//'+location.host+'\n Navegador: '+navigator.userAgent);
+function item(name,passed,detail){
+ var d=document.createElement('div'),n=document.createElement('span'),s=document.createElement('span'),i=document.createElement('span');
+ d.className='line';n.className='name';n.appendChild(document.createTextNode(name));s.className=passed?'yes':'no';s.appendChild(document.createTextNode(passed?'DISPONÍVEL':'NÃO DISPONÍVEL'));
+ i.className='detail';i.appendChild(document.createTextNode(detail));d.appendChild(n);d.appendChild(s);d.appendChild(i);el('results').appendChild(d);
+ records.push({nome:name,disponivel:!!passed,detalhe:detail});
+}
+function test(name,fn){try{var r=fn();item(name,!!r.ok,r.info);}catch(e){item(name,false,(e.name||'Erro')+': '+(e.message||'erro sem descrição'));}}
+function getReport(){
+ var n=0,j;for(j=0;j<records.length;j++){if(records[j].disponivel)n++;}
+ if(records.length){set('summary',n+' de '+records.length+' recursos disponíveis. NÃO é porcentagem de jailbreak.');}
+ var out={titulo:'PS4 WebKit LAB V2 — teste não invasivo',data_utc:new Date().toISOString(),origem:location.protocol+'//'+location.host,
+ navegador:navigator.userAgent,solicitacao_http:hostStatus,recursos:records,
+ aviso:'Somente diagnóstico simples de APIs; sem exploração, kernel ou HEN.'};
+ el('report').value=JSON.stringify(out,null,2);
+}
+el('run').onclick=function(){
+ records=[];el('results').innerHTML='';set('summary','Executando testes leves…');
+ test('ArrayBuffer (64 bytes)',function(){var b=new ArrayBuffer(64),x=new Uint8Array(b);x[0]=17;x[63]=29;return{ok:x[0]===17&&x[63]===29,info:'Apenas 64 bytes privados do JavaScript.'};});
+ test('Uint8Array.subarray',function(){var x=new Uint8Array(8);x[2]=41;var y=x.subarray(2,3);return{ok:y.length===1&&y[0]===41,info:'Verificação de visualização de 1 byte em array local.'};});
+ test('DataView little-endian',function(){var b=new ArrayBuffer(4),x=new DataView(b);x.setUint16(0,0x1234,true);return{ok:x.getUint16(0,true)===0x1234,info:'Leitura e escrita em apenas 4 bytes próprios.'};});
+ test('ArrayBuffer.isView',function(){return{ok:typeof ArrayBuffer.isView==='function'&&ArrayBuffer.isView(new Uint8Array(1)),info:'Identificação de array tipado de 1 byte.'};});
+ test('JSON e caracteres Unicode',function(){var a=JSON.parse(JSON.stringify({v:'ação éducation'}));return{ok:a.v==='ação éducation',info:'Converte uma string curta, sem processamento pesado.'};});
+ test('DOM querySelector',function(){return{ok:document.querySelector('#ps4lab-v2-marker')===el('ps4lab-v2-marker'),info:'Consulta simples ao DOM da página.'};});
+ test('DOM classList',function(){var d=document.createElement('div');return{ok:!!d.classList&&typeof d.classList.add==='function',info:'Só consulta a API de classes CSS, sem inserir elemento.'};});
+ test('Canvas 2D de 1 × 1 pixel',function(){var c=document.createElement('canvas');c.width=1;c.height=1;var x=c.getContext('2d');return{ok:!!x,info:'Cria canvas mínimo; sem WebGL ou renderização intensiva.'};});
+ test('Promise',function(){return{ok:typeof Promise==='function',info:'Apenas verifica a existência da API.'};});
+ test('requestAnimationFrame',function(){return{ok:typeof window.requestAnimationFrame==='function',info:'Apenas verifica a função; não agenda animações.'};});
+ test('TextEncoder',function(){return{ok:typeof window.TextEncoder==='function',info:'Apenas consulta disponibilidade; sem conversões.'};});
+ test('WebAssembly (presença)',function(){return{ok:typeof window.WebAssembly==='object',info:'Apenas consulta disponibilidade; nenhum módulo é carregado.'};});
+ getReport();
+};
+el('hostbtn').onclick=function(){
+ set('hostresult','Consultando host uma única vez…');
+ var xhr=new XMLHttpRequest(),u=location.pathname+'?ps4lab_v2_check=1',finished=false;
+ function done(message){if(finished)return;finished=true;hostStatus=message;set('hostresult',message);getReport();}
+ try{
+ xhr.open('GET',u,true);xhr.timeout=12000;
+ xhr.onreadystatechange=function(){if(xhr.readyState===4){var good=xhr.status===200&&xhr.responseText.indexOf('id="ps4lab-v2-marker"')!==-1;done(good?'HTTP 200 e conteúdo confirmado.':'HTTP '+xhr.status+'; conteúdo não confirmado.');}};
+ xhr.onerror=function(){done('Erro na conexão HTTP.');};xhr.ontimeout=function(){done('Tempo de resposta esgotado.');};xhr.send(null);
+ }catch(e){done('Erro HTTP: '+(e.message||String(e)));}
+};
+el('copy').onclick=function(){var a=el('report');a.focus();a.select();try{if(document.execCommand&&document.execCommand('copy')){set('copyresult','Relatório copiado.');return;}}catch(e){}set('copyresult','Texto selecionado; use Copiar no navegador ou fotografe a tela.');};
+})();
+</script>
+</body>
+</html>
