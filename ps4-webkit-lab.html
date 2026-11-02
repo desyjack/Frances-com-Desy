@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>PS4 WebKit 14.00 | Laboratório de Navegador</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font:17px/1.55 Arial,Helvetica,sans-serif;color:#f5f7fc;background:#071328}
+    .wrap{max-width:820px;margin:0 auto;padding:25px 18px 45px}
+    .brand{font-weight:bold;letter-spacing:1px;font-size:12px;color:#aac0d9;text-transform:uppercase}
+    .tag{background:#183857;color:#b9dcff;border-radius:30px;display:inline-block;padding:4px 11px;font-size:12px;margin:10px 0}
+    h1{font-size:36px;line-height:1.15;margin:6px 0 10px}
+    h1 span{color:#f56c73}
+    h2{font-size:21px;margin:0 0 12px}
+    p{margin:10px 0}
+    .muted{color:#b0bed2}
+    .sub{font-size:14px;color:#a5b3c8}
+    .panel{background:#101f38;border:1px solid #314867;border-radius:14px;padding:20px;margin:18px 0}
+    .warn{border-left:4px solid #f1bc6f;background:#302b23;padding:15px 18px;border-radius:7px;margin:17px 0}
+    button{background:#d94358;color:#fff;border:0;border-radius:8px;padding:14px 20px;min-height:50px;font-size:17px;font-weight:bold;cursor:pointer;margin:8px 8px 6px 0}
+    button.other{background:#2c4366}
+    button:focus{outline:3px solid #f1bb6a}
+    .url{word-wrap:break-word;color:#b4dfff}
+    .test{padding:12px 0;border-bottom:1px solid #2b405e}
+    .test:last-child{border-bottom:0}
+    .testname{font-weight:bold;display:block}
+    .ok{color:#8be4b9;font-weight:bold}
+    .no{color:#ffd598;font-weight:bold}
+    .detail{color:#acbcd1;font-size:14px;display:block;word-break:break-word}
+    #report{display:block;width:100%;height:220px;background:#08152a;border:1px solid #496480;color:#e7efff;border-radius:8px;padding:12px;font:13px/1.5 monospace;resize:vertical}
+    footer{text-align:center;font-size:12px;color:#8194af;margin-top:20px}
+    .naked{background:transparent;border:1px solid #526b87}
+    @media(max-width:590px){.wrap{padding:18px 12px 32px}h1{font-size:28px}.panel{padding:15px}button{width:100%;margin:7px 0}}
+  </style>
+</head>
+<body>
+<div class="wrap" id="ps4lab-marker">
+  <div class="brand">Ambiente isolado · hospedagem Francês com Desy</div>
+  <div class="tag">PS4 / WEBKIT / DIAGNÓSTICO V1</div>
+  <h1>Laboratório <span>PS4 WebKit</span></h1>
+  <p class="muted">Página de testes básicos do navegador do PS4 14.00 — sem computador, sem DNS especial e sem instalação.</p>
+  <div class="warn"><strong>Não é um jailbreak.</strong> Nenhum exploit, payload, acesso ao kernel ou mudança de firmware é executado. O resultado só verifica recursos comuns do navegador.</div>
+  <div class="panel">
+    <h2>1. Sua conexão</h2>
+    <p class="url" id="address">Carregando endereço…</p>
+    <p class="sub" id="agent">Carregando identificação do navegador…</p>
+    <button type="button" id="netbtn" class="other">Verificar resposta do host</button>
+    <p id="netstatus" class="muted">Teste de rede ainda não executado.</p>
+  </div>
+  <div class="panel">
+    <h2>2. Testar navegador</h2>
+    <p class="sub">Resultados são gerados neste dispositivo. O formulário não envia nem coleta informações dos visitantes.</p>
+    <button type="button" id="runbtn">Executar 10 testes seguros</button>
+    <p id="summary" class="muted">Nenhum diagnóstico executado.</p>
+    <div id="results"></div>
+  </div>
+  <div class="panel">
+    <h2>3. Relatório para análise</h2>
+    <p class="sub">Depois de executar os testes, copie o texto ou tire uma foto da tela do PS4 e envie pelo celular.</p>
+    <textarea readonly id="report">Os resultados aparecerão aqui.</textarea>
+    <button type="button" id="copybtn" class="other">Selecionar / copiar relatório</button>
+    <p id="copystatus" class="sub"></p>
+  </div>
+  <div class="panel">
+    <h2>O que este teste NÃO demonstra?</h2>
+    <p class="sub">Ter JavaScript, WebAssembly, ArrayBuffer ou conexão HTTP funcionando não prova que existe uma falha de segurança, escape do sandbox ou suporte ao GoldHEN no firmware 14.00.</p>
+  </div>
+  <footer>PS4 WebKit LAB · arquivo HTML independente · diagnóstico básico e não invasivo</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  function byId(id){return document.getElementById(id);}
+  function text(id,value){byId(id).textContent=String(value);}
+  var results=[];
+  function add(name,pass,detail){
+    results.push({teste:name,disponivel:!!pass,detalhe:String(detail)});
+    var row=document.createElement('div');row.className='test';
+    var head=document.createElement('span');head.className='testname';head.appendChild(document.createTextNode(name));
+    var state=document.createElement('span');state.className=pass?'ok':'no';state.appendChild(document.createTextNode(pass?'DISPONÍVEL':'INDISPONÍVEL'));
+    var note=document.createElement('span');note.className='detail';note.appendChild(document.createTextNode(String(detail)));
+    row.appendChild(head);row.appendChild(state);row.appendChild(note);byId('results').appendChild(row);
+  }
+  function check(name,fn){
+    try {var r=fn();add(name,r.ok,r.info);}catch(e){add(name,false,(e.name||'Erro')+': '+(e.message||String(e)));}
+  }
+  function generate(){
+    var passed=0,i;
+    for(i=0;i<results.length;i++)if(results[i].disponivel)passed++;
+    text('summary',passed+'/'+results.length+' recursos disponíveis. Não é uma pontuação de jailbreak.');
+    var report={laboratorio:'PS4 WebKit LAB no Francês com Desy',data_utc:new Date().toISOString(),endereco:location.href,
+      navegador:navigator.userAgent,plataforma:navigator.platform,idioma:navigator.language,teste:results,
+      aviso:'Compatibilidade JavaScript/HTTP; NÃO demonstra exploit nem firmware.'};
+    byId('report').value=JSON.stringify(report,null,2);
+  }
+  text('address','Host: '+location.hostname+' | Página: '+location.pathname+' | Protocolo: '+location.protocol);
+  text('agent','Navegador: '+navigator.userAgent);
+  byId('runbtn').onclick=function(){
+    results=[];byId('results').innerHTML='';
+    check('JavaScript e DOM',function(){var a=document.createElement('span');a.appendChild(document.createTextNode('OK'));return{ok:a.textContent==='OK',info:'Scripts e criação de elementos funcionam.'};});
+    check('ArrayBuffer / Uint8Array',function(){var a=new Uint8Array(new ArrayBuffer(32));a[4]=92;return{ok:a[4]===92,info:'Acesso controlado a 32 bytes pertencentes ao próprio script.'};});
+    check('DataView',function(){var a=new DataView(new ArrayBuffer(8));a.setUint32(0,3735928559,true);return{ok:a.getUint32(0,true)===3735928559,info:'Leitura e escrita em buffer JavaScript privado.'};});
+    check('JSON',function(){var a=JSON.parse(JSON.stringify({x:5}));return{ok:a.x===5,info:'Serialização e interpretação de JSON.'};});
+    check('XMLHttpRequest',function(){return{ok:typeof XMLHttpRequest==='function',info:'API disponível para requisições ao host.'};});
+    check('localStorage',function(){var key='ps4_lab_tmp_check';localStorage.setItem(key,'ok');var ok=localStorage.getItem(key)==='ok';localStorage.removeItem(key);return{ok:ok,info:'Chave de teste removida após verificação.'};});
+    check('WebAssembly',function(){return{ok:typeof WebAssembly==='object',info:'Apenas disponibilidade da API; não executa módulos.'};});
+    check('Promise',function(){return{ok:typeof Promise==='function',info:'Suporte à API de tarefas assíncronas.'};});
+    check('crypto.getRandomValues',function(){return{ok:!!(window.crypto && typeof window.crypto.getRandomValues==='function'),info:'Consulta de disponibilidade; não gera chaves.'};});
+    check('Protocolo HTTP/HTTPS',function(){return{ok:location.protocol==='http:'||location.protocol==='https:',info:'Página aberta por '+location.protocol};});
+    generate();
+  };
+  byId('netbtn').onclick=function(){
+    text('netstatus','Verificando resposta HTTP...');
+    var xhr=new XMLHttpRequest();
+    var url=location.pathname+(location.search?location.search+'&':'?')+'ps4lab_check=1';
+    try{
+      xhr.open('GET',url,true);
+      xhr.timeout=12000;
+      xhr.onreadystatechange=function(){
+        if(xhr.readyState===4){
+          var correct=xhr.status===200 && xhr.responseText.indexOf('id="ps4lab-marker"')!==-1;
+          text('netstatus',correct?'HTTP 200: este host entregou a página correta. DNS e HTTP funcionam para este acesso.':'HTTP '+xhr.status+': não foi possível confirmar a resposta exata da página de testes.');
+        }
+      };
+      xhr.onerror=function(){text('netstatus','Falha de conexão HTTP.');};
+      xhr.ontimeout=function(){text('netstatus','Tempo esgotado na requisição HTTP.');};
+      xhr.send(null);
+    }catch(e){text('netstatus','Erro HTTP: '+(e.message||String(e)));}
+  };
+  byId('copybtn').onclick=function(){
+    var a=byId('report');a.focus();a.select();
+    try{if(document.execCommand && document.execCommand('copy')){text('copystatus','Copiado. Cole o relatório no chat.');return;}}catch(e){}
+    text('copystatus','Relatório selecionado; use a função Copiar do navegador ou tire uma foto.');
+  };
+}());
+</script>
+</body>
+</html>
